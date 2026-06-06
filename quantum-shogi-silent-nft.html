@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quantum Shogi × Silent NFT</title>
+  <style>
+    :root {
+      --cream: #fcfcf9;
+      --surface: #fffff d;
+      --teal: #21808d;
+      --teal-rgb: 33,128,141;
+      --purple: #9d5aff;
+      --slate: #13343b;
+      --gray: #626c71;
+      --radius: 12px;
+      --gap: 24px;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: var(--cream);
+      color: var(--slate);
+      padding: 16px;
+      line-height: 1.6;
+    }
+    .container { max-width: 1100px; margin: 0 auto; }
+
+    /* ── Header ── */
+    .header {
+      text-align: center;
+      margin-bottom: var(--gap);
+      position: relative;
+      padding: 16px 0;
+    }
+    .header h1 { font-size: 1.6rem; color: var(--teal); }
+    .header p  { font-size: 0.9rem; color: var(--gray); margin-top: 4px; }
+    .lab-badge {
+      position: absolute; top: 16px; right: 0;
+      background: var(--purple); color: #fff;
+      border: none; padding: 7px 14px;
+      border-radius: 20px; cursor: pointer;
+      font-size: 0.8rem; font-weight: 700;
+      box-shadow: 0 4px 12px rgba(157,90,255,.3);
+      transition: transform .2s;
+    }
+    .lab-badge:hover { transform: scale(1.05); }
+
+    /* ── Grid ── */
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--gap);
+    }
+    @media (max-width: 700px) { .grid { grid-template-columns: 1fr; } }
+
+    /* ── Panel ── */
+    .panel {
+      background: #fffffb;
+      border: 1px solid rgba(0,0,0,.09);
+      border-radius: var(--radius);
+      padding: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,.04);
+    }
+    .panel h2 { font-size: 1rem; margin-bottom: 14px; color: var(--slate); }
+
+    /* ── Canvas wrapper ── */
+    .canvas-wrap {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      max-height: 320px;
+      background: rgba(var(--teal-rgb),.04);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    #balmerCanvas {
+      display: block;
+      width: 100% !important;
+      height: 100% !important;
+    }
+
+    /* ── Sliders ── */
+    .slider-group { margin-bottom: 14px; }
+    .slider-group label {
+      display: flex; justify-content: space-between;
+      font-size: 0.82rem; color: var(--gray);
+      margin-bottom: 4px;
+    }
+    .slider-group label span { font-weight: 700; color: var(--teal); }
+    input[type="range"] {
+      width: 100%; accent-color: var(--teal);
+      cursor: pointer; height: 4px;
+    }
+    .prob-label { font-size: 0.78rem; color: var(--purple); text-align: right; }
+
+    /* ── Buttons ── */
+    .btn-row { display: flex; gap: 10px; margin: 14px 0; }
+    .btn {
+      flex: 1; padding: 10px 8px;
+      border: none; border-radius: 8px;
+      font-size: 0.88rem; font-weight: 600;
+      cursor: pointer; transition: opacity .2s, transform .15s;
+    }
+    .btn:active { transform: scale(.97); }
+    .btn-gen  { background: #e8f4f5; color: var(--teal); border: 1px solid rgba(var(--teal-rgb),.2); }
+    .btn-commit { background: var(--teal); color: #fff; }
+    .btn-commit:disabled { opacity: .4; cursor: not-allowed; }
+    .btn-reset { background: #f0f0ec; color: var(--gray); border: 1px solid rgba(0,0,0,.1); }
+
+    /* ── Move list ── */
+    .move-list { max-height: 160px; overflow-y: auto; margin-top: 10px; }
+    .move-item {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 7px 10px;
+      font-size: 0.85rem;
+      border-bottom: 1px solid rgba(0,0,0,.05);
+    }
+    .move-item .bar-wrap {
+      width: 70px; height: 8px;
+      background: #eee; border-radius: 4px; overflow: hidden;
+    }
+    .move-item .bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--teal), var(--purple));
+      border-radius: 4px;
+      transition: width .3s ease;
+    }
+    .empty-msg { font-size: 0.85rem; color: var(--gray); font-style: italic; padding: 8px 0; }
+
+    /* ── Stats ── */
+    .stats { display: flex; gap: 10px; margin-top: 12px; }
+    .stat-box {
+      flex: 1; text-align: center;
+      background: rgba(var(--teal-rgb),.05);
+      border: 1px solid rgba(var(--teal-rgb),.15);
+      border-radius: 8px; padding: 10px 6px;
+    }
+    .stat-val { font-size: 1.15rem; font-weight: 700; color: var(--teal); }
+    .stat-lbl { font-size: 0.72rem; color: var(--gray); margin-top: 2px; }
+
+    /* ── NFT Preview ── */
+    .nft-preview {
+      display: none;
+      margin-top: 16px;
+      padding: 16px;
+      background: linear-gradient(135deg,#fdfbf7 0%,#fff 100%);
+      border: 1px dashed var(--purple);
+      border-radius: 12px;
+      text-align: center;
+      animation: fadeUp .6s ease forwards;
+    }
+    .nft-preview.show { display: block; }
+    @keyframes fadeUp {
+      from { opacity:0; transform:translateY(8px); }
+      to   { opacity:1; transform:translateY(0); }
+    }
+    .nft-preview h3 { font-size: .95rem; margin-bottom: 8px; color: var(--purple); }
+    .nft-cid {
+      font-family: monospace; font-size: .72rem;
+      color: var(--gray); word-break: break-all;
+      background: #f5f5f2; border-radius: 4px;
+      padding: 4px 8px; margin: 6px 0;
+    }
+    .nft-poem {
+      font-style: italic; color: var(--purple);
+      font-size: .9rem; margin: 10px 0 4px;
+    }
+    .nft-wavelength { font-size: .78rem; color: var(--gray); margin-bottom: 10px; }
+    .metadata-json {
+      text-align: left; font-family: monospace; font-size: .72rem;
+      background: #1e1e2e; color: #cdd6f4;
+      border-radius: 8px; padding: 10px;
+      max-height: 120px; overflow-y: auto;
+      white-space: pre; margin: 10px 0;
+    }
+    .btn-copy {
+      background: #eee; border: none; border-radius: 6px;
+      padding: 6px 14px; font-size: .78rem; cursor: pointer;
+      margin-right: 8px; transition: background .2s;
+    }
+    .btn-copy:hover { background: #ddd; }
+    .btn-zora {
+      background: linear-gradient(90deg, #9D50BB 0%, #6E48AA 100%);
+      color: #fff; border: none; border-radius: 8px;
+      padding: 10px 20px; font-size: .85rem;
+      font-weight: 700; cursor: pointer;
+      text-decoration: none; display: inline-block;
+      margin-top: 8px;
+    }
+
+    /* ── Wavefunction display ── */
+    .psi-display {
+      margin-top: 10px; padding: 8px 12px;
+      background: rgba(var(--teal-rgb),.05);
+      border-radius: 6px; font-size: .82rem;
+      color: var(--gray); font-family: monospace;
+    }
+
+    /* ── Commit log ── */
+    .commit-log {
+      margin-top: 14px;
+      background: #f8f8f5;
+      border-radius: 8px;
+      padding: 10px 12px;
+      max-height: 100px;
+      overflow-y: auto;
+      font-size: .78rem;
+      color: var(--gray);
+    }
+    .commit-log p { margin: 2px 0; }
+
+    /* ── RadicanTrust HUD ── */
+    .hud {
+      position: fixed; bottom: 20px; right: 20px;
+      background: rgba(255,255,255,.96);
+      border-left: 4px solid var(--teal);
+      border-radius: 12px;
+      padding: 12px 14px;
+      box-shadow: 0 8px 32px rgba(0,0,0,.12);
+      font-size: .78rem;
+      z-index: 999;
+      width: 220px;
+    }
+    .hud-title { font-weight: 700; color: var(--slate); margin-bottom: 6px; }
+    .hud-score { display: flex; justify-content: space-between; align-items: center; }
+    .hud-dot { color: var(--teal); font-size: .7rem; }
+    .hud-bar-bg {
+      height: 4px; background: #eee;
+      border-radius: 2px; margin: 6px 0;
+      overflow: hidden;
+    }
+    .hud-bar-fill {
+      height: 100%; background: var(--teal);
+      border-radius: 2px; transition: width .4s ease;
+    }
+    .hud-axes { font-size: .68rem; color: #aaa; }
+
+    /* ── Lab panel ── */
+    .lab-panel {
+      display: none;
+      margin-top: var(--gap);
+    }
+    .lab-panel.show { display: block; }
+    .lab-energy-canvas {
+      width: 100%; height: 280px;
+      background: #0a0e1a;
+      border-radius: 8px; display: block;
+    }
+
+    /* ── Notice ── */
+    .notice {
+      font-size: .78rem; color: var(--gray);
+      background: rgba(var(--teal-rgb),.06);
+      border-left: 3px solid var(--teal);
+      padding: 8px 12px; border-radius: 4px;
+      margin-top: 14px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- Header -->
+  <div class="header">
+    <h1>🌊 Quantum Shogi × Silent NFT</h1>
+    <p>Balmer Halo Visualization &amp; Born Rule Probability — IYQ2025</p>
+    <button class="lab-badge" id="labToggleBtn">🔬 Balmer Lab</button>
+  </div>
+
+  <!-- Main Grid -->
+  <div class="grid">
+
+    <!-- LEFT: Halo Canvas -->
+    <div class="panel">
+      <h2>📊 Balmer Halo — 波動関数の可視化</h2>
+      <div class="canvas-wrap">
+        <canvas id="balmerCanvas"></canvas>
+      </div>
+      <div class="psi-display" id="psiDisplay">|ψ⟩ = ...</div>
+
+      <!-- Sliders Hα–Hδ -->
+      <div style="margin-top:14px;">
+        <div class="slider-group">
+          <label>Hα 656nm (Red) <span id="v0">0.60</span></label>
+          <input type="range" id="s0" min="0" max="1" step="0.05" value="0.6">
+          <div class="prob-label" id="p0">P = —</div>
+        </div>
+        <div class="slider-group">
+          <label>Hβ 486nm (Cyan) <span id="v1">0.40</span></label>
+          <input type="range" id="s1" min="0" max="1" step="0.05" value="0.4">
+          <div class="prob-label" id="p1">P = —</div>
+        </div>
+        <div class="slider-group">
+          <label>Hγ 434nm (Violet) <span id="v2">0.30</span></label>
+          <input type="range" id="s2" min="0" max="1" step="0.05" value="0.3">
+          <div class="prob-label" id="p2">P = —</div>
+        </div>
+        <div class="slider-group">
+          <label>Hδ 410nm (UV) <span id="v3">0.20</span></label>
+          <input type="range" id="s3" min="0" max="1" step="0.05" value="0.2">
+          <div class="prob-label" id="p3">P = —</div>
+        </div>
+      </div>
+      <div class="notice">
+        Born則: P(i) = |ψᵢ|² / Σ|ψ|²　　Σ P(i) = <span id="normSum">—</span>
+      </div>
+    </div>
+
+    <!-- RIGHT: Moves + NFT -->
+    <div class="panel">
+      <h2>🎮 候補手 &amp; NFT生成</h2>
+
+      <div class="btn-row">
+        <button class="btn btn-gen" id="btnGen">🎲 手を生成</button>
+        <button class="btn btn-commit" id="btnCommit" disabled>🤷 祈り Commit</button>
+        <button class="btn btn-reset" id="btnReset">↺</button>
+      </div>
+
+      <div class="move-list" id="moveList">
+        <div class="empty-msg">← 「手を生成」で候補手を作成</div>
+      </div>
+
+      <!-- Stats -->
+      <div class="stats">
+        <div class="stat-box">
+          <div class="stat-val" id="sMoves">0</div>
+          <div class="stat-lbl">候補手</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-val" id="sMaxP">—</div>
+          <div class="stat-lbl">最大確率</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-val" id="sEntropy">—</div>
+          <div class="stat-lbl">Entropy</div>
+        </div>
+      </div>
+
+      <!-- NFT Preview -->
+      <div class="nft-preview" id="nftPreview">
+        <h3>💎 Silent Frame — NFT Metadata Ready</h3>
+        <div class="nft-cid" id="nftCid">CID: Qm...</div>
+        <div class="nft-poem" id="nftPoem">“—”</div>
+        <div class="nft-wavelength" id="nftWave">Wavelength: —</div>
+        <div class="metadata-json" id="metaJson">{}</div>
+        <button class="btn-copy" id="btnCopy">📋 JSONをコピー</button>
+        <br>
+        <a class="btn-zora" id="zoraLink" href="#" target="_blank" rel="noopener">
+          🔮 Zora でミント (手動)
+        </a>
+        <div class="notice" style="margin-top:10px;text-align:left;">
+          ⚠️ 上のJSONをコピーし、<strong>Pinata</strong>にアップロード→CID取得後、
+          Zoraの「External Metadata URI」に <code>ipfs://&lt;CID&gt;</code> を貼り付けてください。
+        </div>
+      </div>
+
+      <!-- Commit Log -->
+      <div class="commit-log" id="commitLog">
+        <p style="color:#bbb;">— 操作ログ —</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Lab Panel (hidden by default) -->
+  <div class="lab-panel" id="labPanel">
+    <div class="panel">
+      <h2>⚛️ Balmer Series — Energy Level Diagram</h2>
+      <canvas class="lab-energy-canvas" id="energyCanvas"></canvas>
+      <div class="notice" style="margin-top:10px;">
+        E_n = −13.6 / n² (eV)　　Balmer系列: n ≥ 3 → n = 2 の遷移
+      </div>
+    </div>
+  </div>
+
+</div><!-- /container -->
+
+<!-- RadicanTrust HUD -->
+<div class="hud">
+  <div class="hud-title">RadicanTrust™</div>
+  <div class="hud-score">
+    <span>Score: <strong id="rtVal">0.87</strong></span>
+    <span class="hud-dot">● Active</span>
+  </div>
+  <div class="hud-bar-bg">
+    <div class="hud-bar-fill" id="rtFill" style="width:87%"></div>
+  </div>
+  <div class="hud-axes">Transparency · Inclusivity · Reciprocity · Forgiveness</div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════════
+//  CONSTANTS
+// ═══════════════════════════════════════════════════════════
+const TRANSITIONS = [
+  { name:'Hα', nm:656, color:'#e84141', nFrom:3, poem:'赤の律動が街灯の心を振るわせる' },
+  { name:'Hβ', nm:486, color:'#4da6ff', nFrom:4, poem:'青緑の脈が港の息を重ねる'     },
+  { name:'Hγ', nm:434, color:'#6b5aff', nFrom:5, poem:'紫の残響が遠い波を呼ぶ'       },
+  { name:'Hδ', nm:410, color:'#9d5aff', nFrom:6, poem:'薄紫の閃きが記憶を縫う'       }
+];
+
+const SHOGI_POOL = [
+  { n:'76歩', desc:'Pawn push (center)' },
+  { n:'26歩', desc:'Pawn push (flank)'  },
+  { n:'78銀', desc:'Silver development' },
+  { n:'68銀', desc:'Silver castle'      },
+  { n:'77角', desc:'Bishop diagonal'    },
+  { n:'56歩', desc:'Central pawn push'  },
+  { n:'48金', desc:'Gold king defense'  },
+  { n:'36歩', desc:'Pawn advance'       }
+];
+
+// ═══════════════════════════════════════════════════════════
+const S = {
+  amps:  [0.6, 0.4, 0.3, 0.2],
+  probs: [0, 0, 0, 0],
+  moves: [],
+  rt:    0.87,
+  commitCount: 0
+};
+
+// ═══════════════════════════════════════════════════════════
+function calcProbs() {
+  const sq  = S.amps.map(a => a * a);
+  const sum = sq.reduce((a,b) => a + b, 0) || 1;
+  S.probs   = sq.map(v => v / sum);
+  return sum;
+}
+
+function entropy(probs) {
+  return -probs.reduce((s,p) => s + (p > 0 ? p * Math.log2(p) : 0), 0);
+}
+
+function calcEnergy(n) { return -13.6 / (n * n); }
+
+// ═══════════════════════════════════════════════════════════
+const haloCanvas = document.getElementById('balmerCanvas');
+const haloCtx    = haloCanvas.getContext('2d');
+let   haloTick   = 0;
+let   haloRaf;
+
+function resizeHalo() {
+  const wrap    = haloCanvas.parentElement;
+  haloCanvas.width  = wrap.clientWidth;
+  haloCanvas.height = wrap.clientHeight;
+}
+
+function drawHalo() {
+  const c   = haloCtx;
+  const w   = haloCanvas.width;
+  const h   = haloCanvas.height;
+  const cx  = w / 2;
+  const cy  = h / 2;
+
+  c.clearRect(0, 0, w, h);
+
+  // Background fade
+  c.fillStyle = 'rgba(252,252,249,1)';
+  c.fillRect(0, 0, w, h);
+
+  // Halos
+  S.probs.forEach((p, i) => {
+    if (p < 0.005) return;
+    const r    = 28 + i * 22;
+    const glow = c.createRadialGradient(cx, cy, r * .3, cx, cy, r);
+    const hex  = TRANSITIONS[i].color;
+    glow.addColorStop(0, hex + '55');
+    glow.addColorStop(1, hex + '00');
+    c.fillStyle = glow;
+    c.beginPath();
+    c.arc(cx, cy, r, 0, Math.PI * 2);
+    c.fill();
+
+    // Ring stroke (animated breathing)
+    const breathe = 1 + Math.sin(haloTick * 0.04 + i) * 0.04;
+    c.beginPath();
+    c.arc(cx, cy, r * breathe, 0, Math.PI * 2);
+    c.strokeStyle = hex;
+    c.lineWidth   = Math.max(1, p * 14);
+    c.globalAlpha = 0.55 + p * 0.45;
+    c.stroke();
+    c.globalAlpha = 1;
+  });
+
+  // Nucleus
+  const nGrad = c.createRadialGradient(cx, cy, 0, cx, cy, 12);
+  nGrad.addColorStop(0, '#fff');
+  nGrad.addColorStop(1, '#21808d');
+  c.beginPath();
+  c.arc(cx, cy, 10, 0, Math.PI * 2);
+  c.fillStyle = nGrad;
+  c.fill();
+
+  // Label
+  c.fillStyle = '#13343b';
+  c.font = 'bold 13px monospace';
+  c.textAlign = 'center';
+  c.textBaseline = 'middle';
+  c.fillText('|ψ⟩', cx, cy);
+
+  // Move nodes
+  if (S.moves.length > 0) {
+    const rOrbit = Math.min(w, h) * 0.32;
+    S.moves.forEach((mv, idx) => {
+      const angle = (idx / S.moves.length) * Math.PI * 2 - Math.PI / 2;
+      const mx    = cx + Math.cos(angle) * rOrbit;
+      const my    = cy + Math.sin(angle) * rOrbit;
+      const col   = TRANSITIONS[idx % 4].color;
+
+      // Connection line
+      c.beginPath();
+      c.moveTo(cx, cy);
+      c.lineTo(mx, my);
+      c.strokeStyle = col + '44';
+      c.lineWidth = 1;
+      c.stroke();
+
+      // Node
+      c.beginPath();
+      c.arc(mx, my, 5 + mv.prob * 12, 0, Math.PI * 2);
+      c.fillStyle = col + 'cc';
+      c.fill();
+
+      // Label
+      c.fillStyle = '#333';
+      c.font = '11px sans-serif';
+      c.textAlign = 'center';
+      c.textBaseline = 'top';
+      c.fillText(mv.name, mx, my + 14);
+      c.fillText((mv.prob * 100).toFixed(1) + '%', mx, my + 26);
+    });
+  }
+
+  haloTick++;
+  haloRaf = requestAnimationFrame(drawHalo);
+}
+
+// ═══════════════════════════════════════════════════════════
+function updateSliderUI() {
+  const sumSq = calcProbs();
+
+  S.amps.forEach((a, i) => {
+    const v = document.getElementById(`v${i}`);
+    const p = document.getElementById(`p${i}`);
+    if (v) v.textContent = a.toFixed(2);
+    if (p) p.textContent = `P = ${(S.probs[i] * 100).toFixed(1)}%`;
+  });
+
+  document.getElementById('normSum').textContent =
+    S.probs.reduce((a,b)=>a+b,0).toFixed(4);
+
+  // ψ display
+  const terms = TRANSITIONS.map((t,i) =>
+    `${S.amps[i].toFixed(2)}|${t.name}⟩`).join(' + ');
+  document.getElementById('psiDisplay').textContent = `|ψ⟩ = ${terms}`;
+
+  drawEnergyDiagram();
+}
+
+// ═══════════════════════════════════════════════════════════
+function generateMoves() {
+  const pool = [...SHOGI_POOL].sort(() => Math.random() - .5).slice(0, 4);
+  S.moves = pool.map((m, i) => ({
+    name: m.n,
+    desc: m.desc,
+    prob: S.probs[i % 4]
+  }));
+
+  renderMoveList();
+  document.getElementById('btnCommit').disabled = false;
+  log(`🎲 ${S.moves.length} 手を生成`);
+  boostRT(0.01);
+}
+
+function renderMoveList() {
+  const el = document.getElementById('moveList');
+  if (!S.moves.length) {
+    el.innerHTML = '<div class="empty-msg">← 「手を生成」で候補手を作成</div>';
+    return;
+  }
+
+  el.innerHTML = S.moves.map(m => `
+    <div class="move-item">
+      <span>${m.name}</span>
+      <div class="bar-wrap">
+        <div class="bar-fill" style="width:${(m.prob*100).toFixed(0)}%"></div>
+      </div>
+      <span style="font-size:.8rem;color:#626c71;width:44px;text-align:right">
+        ${(m.prob*100).toFixed(1)}%
+      </span>
+    </div>`).join('');
+
+  // Stats
+  const maxP = Math.max(...S.moves.map(m => m.prob));
+  const H    = entropy(S.moves.map(m => m.prob));
+  document.getElementById('sMoves').textContent   = S.moves.length;
+  document.getElementById('sMaxP').textContent    = (maxP*100).toFixed(0)+'%';
+  document.getElementById('sEntropy').textContent = H.toFixed(2);
+}
+
+// ═══════════════════════════════════════════════════════════
+function commitMove() {
+  if (!S.moves.length) return;
+
+  // Categorical sample
+  let rand = Math.random(), acc = 0, chosen = 0;
+  for (let i = 0; i < S.probs.length; i++) {
+    acc += S.probs[i];
+    if (rand < acc) { chosen = i; break; }
+  }
+
+  const move      = S.moves[chosen] || S.moves[0];
+  const trans     = TRANSITIONS[chosen % 4];
+  const poem      = trans.poem;
+  const timestamp = new Date().toISOString();
+  S.commitCount++;
+
+  // Build metadata JSON (ERC-721 compatible)
+  const meta = {
+    name: `Silent Frame #${S.commitCount} — Quantum Shogi`,
+    description: `A wave function collapse recorded at ${timestamp}. CoPhelia³ Protocol. IYQ2025.`,
+    image: "ipfs://QmPlaceholderCID_ReplaceAfterPinataUpload",
+    attributes: [
+      { trait_type: "Move",         value: move.name              },
+      { trait_type: "Poetry",       value: poem                   },
+      { trait_type: "Wavelength",   value: `${trans.nm}nm`        },
+      { trait_type: "Transition",   value: trans.name             },
+      { trait_type: "Probability",  value: (move.prob*100).toFixed(2)+"%" },
+      { trait_type: "RadicanTrust", value: S.rt.toFixed(2)        },
+      { trait_type: "Timestamp",    value: timestamp              },
+      { trait_type: "Mode",         value: "receiving"            }
+    ]
+  };
+
+  // Deterministic mock CID (stable within session)
+  const fakeCid = 'QmSilent' + btoa(move.name + timestamp).replace(/[^a-zA-Z0-9]/g,'').slice(0,16);
+
+  // Show NFT preview
+  const preview = document.getElementById('nftPreview');
+  preview.classList.add('show');
+  document.getElementById('nftCid').textContent   = `CID (mock): ${fakeCid}`;
+  document.getElementById('nftPoem').textContent  = `"${poem}"`;
+  document.getElementById('nftWave').textContent  = `Wavelength: ${trans.nm}nm — ${trans.name}`;
+  document.getElementById('metaJson').textContent = JSON.stringify(meta, null, 2);
+
+  // Zora create link (pre-fills name + description)
+  const zoraUrl = `https://zora.co/create?name=${encodeURIComponent(meta.name)}&description=${encodeURIComponent(meta.description)}`;
+  document.getElementById('zoraLink').href = zoraUrl;
+
+  boostRT(0.05);
+  log(`🤷 Commit → ${move.name} | ${poem} | RT: ${S.rt.toFixed(2)}`);
+
+  // Reset moves
+  S.moves = [];
+  renderMoveList();
+  document.getElementById('btnCommit').disabled = true;
+}
+
+// ═══════════════════════════════════════════════════════════
+document.getElementById('btnCopy').addEventListener('click', () => {
+  const text = document.getElementById('metaJson').textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    document.getElementById('btnCopy').textContent = '✅ コピー完了';
+    setTimeout(() => document.getElementById('btnCopy').textContent = '📋 JSONをコピー', 2000);
+  });
+});
+
+// ═══════════════════════════════════════════════════════════
+function boostRT(delta) {
+  S.rt = Math.min(1.0, Math.max(0.0, S.rt + delta));
+  document.getElementById('rtVal').textContent  = S.rt.toFixed(2);
+  document.getElementById('rtFill').style.width = (S.rt * 100) + '%';
+}
+
+// ═══════════════════════════════════════════════════════════
+function log(msg) {
+  const el = document.getElementById('commitLog');
+  const p  = document.createElement('p');
+  p.textContent = `[${new Date().toLocaleTimeString()}] ${msg}`;
+  el.prepend(p);
+  while (el.children.length > 12) el.removeChild(el.lastChild);
+}
+
+// ═══════════════════════════════════════════════════════════
+function resetAll() {
+  S.moves = [];
+  renderMoveList();
+  document.getElementById('btnCommit').disabled = true;
+  document.getElementById('nftPreview').classList.remove('show');
+  document.getElementById('sMoves').textContent   = '0';
+  document.getElementById('sMaxP').textContent    = '—';
+  document.getElementById('sEntropy').textContent = '—';
+  log('↺ リセット');
+}
+
+// ═══════════════════════════════════════════════════════════
+function drawEnergyDiagram() {
+  const canvas = document.getElementById('energyCanvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const W = canvas.clientWidth || 600;
+  const H = canvas.clientHeight || 280;
+  canvas.width  = W;
+  canvas.height = H;
+
+  ctx.fillStyle = '#0a0e1a';
+  ctx.fillRect(0, 0, W, H);
+
+  const mg   = 50;
+  const eMin = calcEnergy(6);
+  const eMax = calcEnergy(2);
+  const span = eMax - eMin || 1;
+
+  const eY = n => mg + (1 - (calcEnergy(n) - eMin) / span) * (H - mg * 1.8);
+
+  // Energy levels
+  [2,3,4,5,6].forEach(n => {
+    const y  = eY(n);
+    const E  = calcEnergy(n);
+    const isBase = n === 2;
+    ctx.strokeStyle = isBase ? '#ffd700' : '#3a4a6e';
+    ctx.lineWidth   = isBase ? 2.5 : 1.5;
+    ctx.beginPath();
+    ctx.moveTo(mg, y);
+    ctx.lineTo(W - mg, y);
+    ctx.stroke();
+    ctx.fillStyle = isBase ? '#ffd700' : '#8899aa';
+    ctx.font = `${isBase?'bold ':''}11px monospace`;
+    ctx.textAlign = 'left';
+    ctx.fillText(`n=${n}  ${E.toFixed(2)} eV`, mg + 4, y - 4);
+  });
+
+  // Transition arrows
+  TRANSITIONS.forEach((t, i) => {
+    const prob = S.probs[i];
+    const x    = W * 0.3 + i * (W * 0.13);
+    const y1   = eY(t.nFrom);
+    const y2   = eY(2);
+
+    ctx.strokeStyle    = t.color;
+    ctx.lineWidth      = 1 + prob * 6;
+    ctx.globalAlpha    = 0.3 + prob * 0.7;
+    ctx.shadowBlur     = prob * 20;
+    ctx.shadowColor    = t.color;
+    ctx.beginPath();
+    ctx.moveTo(x, y1);
+    ctx.lineTo(x, y2);
+    ctx.stroke();
+
+    // Arrowhead
+    ctx.beginPath();
+    ctx.moveTo(x - 5, y2 + 10);
+    ctx.lineTo(x, y2);
+    ctx.lineTo(x + 5, y2 + 10);
+    ctx.stroke();
+
+    ctx.globalAlpha = 1;
+    ctx.shadowBlur  = 0;
+
+    ctx.fillStyle   = t.color;
+    ctx.font        = 'bold 11px sans-serif';
+    ctx.textAlign   = 'center';
+    ctx.fillText(t.name, x, y1 - 6);
+    ctx.font = '10px monospace';
+    ctx.fillText(`${t.nm}nm`, x, y1 - 18);
+  });
+
+  // Axes labels
+  ctx.fillStyle   = '#556';
+  ctx.font        = '10px sans-serif';
+  ctx.textAlign   = 'center';
+  ctx.fillText('Energy (eV)', mg / 2, H / 2);
+  ctx.fillText('Balmer Series Transitions', W / 2, H - 8);
+}
+
+// ═══════════════════════════════════════════════════════════
+document.getElementById('labToggleBtn').addEventListener('click', () => {
+  const lp  = document.getElementById('labPanel');
+  const btn = document.getElementById('labToggleBtn');
+  if (lp.classList.toggle('show')) {
+    btn.textContent = '🔬 Balmer Lab ▲';
+    drawEnergyDiagram();
+  } else {
+    btn.textContent = '🔬 Balmer Lab';
+  }
+});
+
+// ═══════════════════════════════════════════════════════════
+[0,1,2,3].forEach(i => {
+  document.getElementById(`s${i}`).addEventListener('input', e => {
+    S.amps[i] = parseFloat(e.target.value);
+    updateSliderUI();
+  });
+});
+
+document.getElementById('btnGen').addEventListener('click',    generateMoves);
+document.getElementById('btnCommit').addEventListener('click', commitMove);
+document.getElementById('btnReset').addEventListener('click',  resetAll);
+
+// ═══════════════════════════════════════════════════════════
+window.addEventListener('resize', () => {
+  resizeHalo();
+  drawEnergyDiagram();
+});
+
+resizeHalo();
+updateSliderUI();
+cancelAnimationFrame(haloRaf);
+drawHalo();
+log('🌊 Quantum Shogi × Silent NFT — 起動');
+</script>
+</body>
+</html>
