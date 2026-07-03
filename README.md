@@ -1,9 +1,21 @@
-# 🌊 Quantum Shogi × Silent NFT
+# 🌊 Quantum Shogi
 
-**Reference implementation of the QuantumArt Protocol 2026**
+**A reference implementation of the QuantumArt Protocol 2026**  
+**Silent NFT is one experimental module within the project.**
 
 > 静かな波が星の記憶を運ぶ。  
 > 波動関数の微かな振れが、信頼の橋をつなぐ。
+
+---
+
+## Live Entry
+
+The repository includes an `index.html` entry point prepared for GitHub Pages.
+
+- Local artifact: [`quantum-shogi-silent-nft.html`](quantum-shogi-silent-nft.html)
+- Public entry file: [`index.html`](index.html)
+
+GitHub Pages must still be enabled in the repository settings before a public site URL becomes active.
 
 ---
 
@@ -17,9 +29,9 @@ quantum-shogi-silent-nft
   └── tests one experimental implementation
 ```
 
-This repository is an experimental artwork and reference implementation derived from the canonical documentation maintained in:
+Canonical sources:
 
-- [quantumart-protocol-2026-official](https://github.com/nijinomichi/quantumart-protocol-2026-official)
+- [QuantumArt Protocol 2026 — official repository](https://github.com/nijinomichi/quantumart-protocol-2026-official)
 - [Definitions](https://github.com/nijinomichi/quantumart-protocol-2026-official/blob/main/00_DEFINITIONS.md)
 - [IYQ2025-facing statement](https://github.com/nijinomichi/quantumart-protocol-2026-official/blob/main/statement.md)
 
@@ -33,13 +45,13 @@ The canonical repository defines the principles. This repository tests one possi
 
 This repository is not a finished product, audited smart contract, scientific instrument, or officially endorsed IYQ2025 project.
 
-See [`ROADMAP.md`](ROADMAP.md) for the current scope, completed work, known limitations, and next actions.
+See [`ROADMAP.md`](ROADMAP.md) for current scope, known limitations, and completion criteria.
 
 ---
 
 ## Purpose
 
-Quantum Shogi × Silent NFT explores how quantum-inspired visual language, probability interfaces, poetic interaction, and NFT-oriented metadata may coexist within a small browser-based artwork.
+Quantum Shogi explores how quantum-inspired visual language, probability interfaces, poetic interaction, and NFT-oriented metadata may coexist within a browser-based artwork.
 
 The project aims to:
 
@@ -62,50 +74,44 @@ A standalone browser prototype containing:
 - shogi-like candidate move generation
 - ERC-721-compatible metadata draft generation
 - RadicanTrust™ experimental HUD
-- an energy-level visualization panel
+- energy-level visualization
 
-The metadata generator produces a draft JSON structure intended for later review and adaptation. It does **not** deploy, mint, or verify an ERC-721 smart contract.
+The metadata generator produces a draft JSON structure for later review. It does **not** deploy, mint, upload, or verify an ERC-721 token.
 
 ---
 
-## Scientific and Institutional Boundary
+## Documentation
 
-Quantum terminology is used in two different ways:
-
-1. **Scientific references**, where a defined formula or physical concept is implemented or cited.
-2. **Poetic metaphors**, where quantum language supports artistic interpretation.
-
-These uses should not be confused.
-
-This project was prepared with themes associated with the International Year of Quantum Science and Technology 2025 in mind. It is **not affiliated with, certified by, endorsed by, or submitted on behalf of UNESCO, IYQ2025, or any related institution unless separately documented**.
+- [`docs/architecture.md`](docs/architecture.md) — project hierarchy and internal structure
+- [`docs/provenance.md`](docs/provenance.md) — authorship, revision, and publication evidence
+- [`docs/nft_metadata.md`](docs/nft_metadata.md) — metadata scope and minting boundary
+- [`docs/references.md`](docs/references.md) — scientific and poetic terminology boundary
+- [`ROADMAP.md`](ROADMAP.md) — current status and next actions
 
 ---
 
 ## Usage
 
-1. Open `quantum-shogi-silent-nft.html` in a modern browser.
+1. Open `index.html` or `quantum-shogi-silent-nft.html` in a modern browser.
 2. Generate candidate moves.
 3. Select and commit an observation.
 4. Review the generated metadata draft.
-5. Validate all fields, licenses, media URIs, and provenance before any external upload or mint.
+5. Validate every field, right, URI, and provenance record before external use.
 
-Do not treat a generated placeholder CID, score, probability label, or metadata field as independently verified evidence.
+Do not treat placeholder CIDs, scores, probability labels, or metadata fields as independently verified evidence.
 
 ---
 
-## RadicanTrust™
+## Scientific and Institutional Boundary
 
-RadicanTrust™ is used here as an experimental relational framework, not as an objective or externally audited trust score.
+Quantum terminology is used in two distinct ways:
 
-Its conceptual axes may include:
+1. **Scientific reference**, where a formula or physical concept is implemented or cited.
+2. **Poetic metaphor**, where quantum language supports artistic interpretation.
 
-- transparency
-- inclusion
-- reciprocity
-- revision
-- provenance
+These uses must not be confused.
 
-The canonical definition is maintained in the parent protocol repository.
+This project was prepared with themes associated with the International Year of Quantum Science and Technology 2025 in mind. It is **not affiliated with, certified by, endorsed by, or submitted on behalf of UNESCO, IYQ2025, or any related institution unless separately documented**.
 
 ---
 
@@ -113,21 +119,17 @@ The canonical definition is maintained in the parent protocol repository.
 
 Code in this repository is released under the [MIT License](LICENSE.md), unless a file states otherwise.
 
-Generated artworks, text, third-party assets, NFT media, and external datasets may require separate rights information. The MIT License does not automatically grant rights to material not owned by the repository author.
-
-Creative Resonance Commons language, where used, is an experimental ethical commitment and does not replace a legally reviewed license.
+Artwork, generated media, text, datasets, trademarks, and third-party materials may require separate terms. Creative Resonance Commons language is an experimental ethical commitment and does not replace a legally reviewed license.
 
 ---
 
-## Authors and Attribution
+## Authorship
 
 Created by **Sou Hashiguchi**, with AI-assisted drafting and iteration through the CoPhelia³ / Ara-Philia³ creative framework.
 
-AI assistance does not replace human authorship responsibility, provenance review, or legal verification.
+AI assistance does not replace human responsibility for publication, scientific accuracy, licensing, provenance, or minting decisions.
 
 ---
-
-## Project Note
 
 > We do not create beauty by removing uncertainty.  
 > We create places where uncertainty can become beautiful.
