@@ -2,21 +2,26 @@
 
 ## Current Status
 
-**Stage:** experimental prototype
+**Stage:** experimental reference implementation
 
-The repository currently contains one standalone browser artifact and supporting documentation. It should be treated as a reference implementation, not as a production application, audited NFT system, or validated scientific tool.
+The repository contains one standalone browser artifact, a GitHub Pages entry point, and supporting documentation. It should not be treated as a production application, audited NFT system, or validated scientific tool.
 
 ## Completed
 
-- Public repository created
-- Standalone HTML prototype added
-- Balmer-inspired visualization implemented
-- Born-rule-inspired probability interface implemented
-- Shogi-like candidate move generation implemented
-- Metadata draft generation implemented
-- Parent protocol relationship documented
-- IYQ2025 non-affiliation boundary documented
-- License notice added
+- ✅ Public repository created
+- ✅ Standalone HTML prototype added
+- ✅ Balmer-inspired visualization implemented
+- ✅ Born-rule-inspired probability interface implemented
+- ✅ Shogi-like candidate move generation implemented
+- ✅ Metadata draft generation implemented
+- ✅ Parent protocol relationship documented
+- ✅ IYQ2025 non-affiliation boundary documented
+- ✅ License notice added
+- ✅ CSS custom-property typo corrected
+- ✅ Project hierarchy clarified: Quantum Shogi as project, Silent NFT as module
+- ✅ `docs/` structure added
+- ✅ GitHub Pages entry file prepared as `index.html`
+- ✅ Provenance and NFT metadata boundaries documented
 
 ## Known Limitations
 
@@ -25,32 +30,34 @@ The repository currently contains one standalone browser artifact and supporting
 - No smart contract is deployed or audited.
 - No IPFS upload is performed by the application.
 - RadicanTrust™ values are experimental internal indicators, not certified measurements.
-- Scientific references and poetic metaphors are not yet annotated line by line.
+- Scientific references and poetic metaphors are not yet annotated line by line in the implementation.
 - Accessibility and mobile-device behavior require review.
+- GitHub Pages is prepared but not yet confirmed as enabled.
+- No formal GitHub Release has yet been published.
 
 ## Next Actions
 
 ### Phase 1: Integrity
 
-- ✅ CSS custom-property typo corrected.
 - Add metadata schema validation.
 - Replace placeholder values with explicit labels.
-- Add provenance fields for generated artifacts.
-- Add a scientific/metaphorical terminology note.
+- Add provenance fields to generated artifacts.
+- Annotate scientific and metaphorical terminology in the implementation.
 
 ### Phase 2: Reliability
 
-- Add basic automated tests for probability normalization and metadata output.
+- Add automated tests for probability normalization and metadata output.
 - Test current Safari, Chrome, and Firefox behavior.
 - Review keyboard access, contrast, labels, and reduced-motion support.
-- Record known browser limitations.
+- Record browser limitations.
 
 ### Phase 3: Publication
 
-- Decide whether GitHub Pages should host the prototype.
+- Enable GitHub Pages from the `main` branch root.
+- Confirm the public site URL and browser behavior.
 - Add screenshots and a short demonstration recording.
-- Add versioned releases.
-- Document any external media, datasets, and licenses.
+- Publish the first versioned release as `v0.1.0` after validation.
+- Document all external media, datasets, and licenses.
 
 ### Phase 4: NFT Experiment
 
@@ -63,11 +70,12 @@ The repository currently contains one standalone browser artifact and supporting
 
 The prototype may be described as a stable public experiment when:
 
-- known syntax errors are fixed
 - metadata output is validated
 - claims and metaphors are clearly separated
 - licensing and provenance are complete
 - browser behavior is tested
+- accessibility review is recorded
+- the public release is versioned
 - published NFT identifiers, if any, are independently verifiable
 
 ## Canonical Relationship
