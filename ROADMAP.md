@@ -20,7 +20,6 @@ The repository currently contains one standalone browser artifact and supporting
 
 ## Known Limitations
 
-- The HTML contains a CSS custom-property typo: `--surface: #fffff d;` should be `--surface: #fffffd;`.
 - No automated browser tests are present.
 - No schema validation is applied to generated metadata.
 - No smart contract is deployed or audited.
