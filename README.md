@@ -12,8 +12,9 @@
 
 The repository includes an `index.html` entry point prepared for GitHub Pages.
 
-- Local artifact: [`quantum-shogi-silent-nft.html`](quantum-shogi-silent-nft.html)
 - Public entry file: [`index.html`](index.html)
+- Primary Pages experience: [`app/quantum-balmer-standalone.html`](app/quantum-balmer-standalone.html)
+- Legacy prototype: [`quantum-shogi-silent-nft.html`](quantum-shogi-silent-nft.html)
 
 GitHub Pages must still be enabled in the repository settings before a public site URL becomes active.
 
@@ -63,11 +64,25 @@ The project aims to:
 
 ---
 
-## Artifact
+## Artifacts
+
+### `app/quantum-balmer-standalone.html`
+
+The primary public experience for GitHub Pages.
+
+It is a self-contained static HTML page containing:
+
+- Balmer-series-inspired halo visualization
+- Born-rule-inspired probability controls
+- bilingual quantum poem display
+- 528Hz / 432Hz waveform visualization
+- animated starfield background
+- no external API calls
+- no required build step
 
 ### `quantum-shogi-silent-nft.html`
 
-A standalone browser prototype containing:
+The legacy standalone prototype containing:
 
 - Balmer-series-inspired halo visualization
 - Born-rule-inspired probability calculation
@@ -92,10 +107,10 @@ The metadata generator produces a draft JSON structure for later review. It does
 
 ## Usage
 
-1. Open `index.html` or `quantum-shogi-silent-nft.html` in a modern browser.
-2. Generate candidate moves.
-3. Select and commit an observation.
-4. Review the generated metadata draft.
+1. Open `index.html` or `app/quantum-balmer-standalone.html` in a modern browser.
+2. Adjust the Balmer transition amplitudes.
+3. Observe the probability distribution and poem shift.
+4. Use the legacy prototype only when testing Silent NFT metadata drafts.
 5. Validate every field, right, URI, and provenance record before external use.
 
 Do not treat placeholder CIDs, scores, probability labels, or metadata fields as independently verified evidence.
