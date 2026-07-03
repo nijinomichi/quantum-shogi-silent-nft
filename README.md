@@ -111,7 +111,7 @@ The canonical definition is maintained in the parent protocol repository.
 
 ## Licensing
 
-Code in this repository is released under the [MIT License](LICENSE), unless a file states otherwise.
+Code in this repository is released under the [MIT License](LICENSE.md), unless a file states otherwise.
 
 Generated artworks, text, third-party assets, NFT media, and external datasets may require separate rights information. The MIT License does not automatically grant rights to material not owned by the repository author.
 
