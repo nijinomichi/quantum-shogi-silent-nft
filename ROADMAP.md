@@ -32,7 +32,7 @@ The repository currently contains one standalone browser artifact and supporting
 
 ### Phase 1: Integrity
 
-- Correct the CSS custom-property typo in `quantum-shogi-silent-nft.html`.
+- ✅ CSS custom-property typo corrected.
 - Add metadata schema validation.
 - Replace placeholder values with explicit labels.
 - Add provenance fields for generated artifacts.
