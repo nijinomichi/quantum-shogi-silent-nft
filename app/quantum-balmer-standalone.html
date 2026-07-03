@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Quantum Shogi — Balmer Resonance</title>
+  <meta name="description" content="A standalone QuantumArt Protocol reference experience: Balmer-series visualization, Born-rule-inspired probability, bilingual quantum poetry, and waveform resonance.">
+  <style>
+    :root {
+      --bg: #080b18;
+      --panel: rgba(12, 18, 38, .82);
+      --line: rgba(125, 249, 255, .22);
+      --text: #f7fbff;
+      --muted: #a8b6cc;
+      --gold: #ffd54f;
+      --cyan: #7df9ff;
+      --indigo: #1a237e;
+      --pink: #ff69b4;
+      --green: #9cffb3;
+      --radius: 22px;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 20% 20%, rgba(125,249,255,.18), transparent 32%),
+        radial-gradient(circle at 80% 15%, rgba(255,105,180,.16), transparent 28%),
+        radial-gradient(circle at 50% 110%, rgba(255,213,79,.12), transparent 32%),
+        var(--bg);
+      font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      overflow-x: hidden;
+    }
+    canvas#stars { position: fixed; inset: 0; z-index: -1; opacity: .85; }
+    main { width: min(1180px, calc(100% - 32px)); margin: 0 auto; padding: 42px 0 56px; }
+    header { display: grid; grid-template-columns: 1fr auto; gap: 24px; align-items: start; margin-bottom: 24px; }
+    .eyebrow { color: var(--cyan); letter-spacing: .18em; text-transform: uppercase; font-size: .76rem; }
+    h1 { margin: 10px 0; font-size: clamp(2.15rem, 6vw, 5.8rem); line-height: .94; letter-spacing: -.065em; }
+    .lead { max-width: 720px; color: var(--muted); font-size: clamp(1rem, 2vw, 1.18rem); }
+    .toggle { display: flex; gap: 8px; padding: 8px; border: 1px solid var(--line); border-radius: 999px; background: rgba(255,255,255,.05); }
+    .toggle button, .primary button {
+      border: 0; border-radius: 999px; padding: 9px 14px; color: var(--text); background: transparent; cursor: pointer; font-weight: 700;
+    }
+    .toggle button.active { background: linear-gradient(90deg, rgba(125,249,255,.25), rgba(255,213,79,.22)); }
+    .grid { display: grid; grid-template-columns: 1.18fr .82fr; gap: 18px; }
+    .panel { border: 1px solid var(--line); border-radius: var(--radius); background: var(--panel); box-shadow: 0 22px 80px rgba(0,0,0,.28); backdrop-filter: blur(18px); }
+    .panel.pad { padding: 22px; }
+    .heroCanvas { width: 100%; aspect-ratio: 1.38 / 1; display: block; border-radius: var(--radius); }
+    h2 { font-size: 1rem; letter-spacing: .08em; text-transform: uppercase; color: var(--cyan); margin: 0 0 16px; }
+    .sliders { display: grid; gap: 14px; }
+    label { display: grid; gap: 8px; color: var(--muted); font-size: .92rem; }
+    label span { color: var(--text); display: flex; justify-content: space-between; }
+    input[type="range"] { width: 100%; accent-color: var(--cyan); }
+    .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 16px; }
+    .stat { padding: 14px; border-radius: 16px; background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.08); }
+    .stat strong { display: block; font-size: 1.22rem; color: var(--gold); }
+    .stat small { color: var(--muted); }
+    .poem { font-size: 1.28rem; line-height: 1.72; margin: 10px 0 0; }
+    .poem em { color: var(--gold); font-style: normal; }
+    .wave { width: 100%; height: 150px; display: block; margin-top: 12px; border-radius: 16px; background: rgba(0,0,0,.18); }
+    .notice { color: var(--muted); font-size: .88rem; border-top: 1px solid var(--line); margin-top: 18px; padding-top: 16px; }
+    .primary { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 18px; }
+    .primary button { background: linear-gradient(90deg, rgba(125,249,255,.22), rgba(255,213,79,.2)); border: 1px solid var(--line); }
+    footer { margin-top: 24px; color: var(--muted); font-size: .86rem; }
+    @media (max-width: 860px) { header, .grid { grid-template-columns: 1fr; } .toggle { width: fit-content; } }
+  </style>
+</head>
+<body>
+<canvas id="stars"></canvas>
+<main>
+  <header>
+    <div>
+      <div class="eyebrow">QuantumArt Protocol 2026 / Reference Experience</div>
+      <h1>Quantum Shogi<br>Balmer Resonance</h1>
+      <p class="lead" data-ja="バルマー系列・Born則・詩的観測をひとつの静的展示空間へ統合した、GitHub Pages向けの自己完結型プロトタイプです。" data-en="A self-contained GitHub Pages prototype combining Balmer-series light, Born-rule-inspired probability, and poetic observation in one static exhibition space.">バルマー系列・Born則・詩的観測をひとつの静的展示空間へ統合した、GitHub Pages向けの自己完結型プロトタイプです。</p>
+    </div>
+    <div class="toggle" aria-label="language toggle"><button id="ja" class="active">JP</button><button id="en">EN</button></div>
+  </header>
+
+  <section class="grid">
+    <div class="panel"><canvas id="halo" class="heroCanvas" aria-label="Balmer halo visualization"></canvas></div>
+    <aside class="panel pad">
+      <h2 data-ja="Born則コントロール" data-en="Born Rule Controls">Born則コントロール</h2>
+      <div class="sliders" id="sliders"></div>
+      <div class="stats">
+        <div class="stat"><strong id="norm">1.00</strong><small>Σ |c|²</small></div>
+        <div class="stat"><strong id="dominant">Hα</strong><small data-ja="最大遷移" data-en="Dominant transition">最大遷移</small></div>
+        <div class="stat"><strong id="phase">0.618</strong><small>RadicanTrust φ</small></div>
+      </div>
+      <div class="primary"><button id="observe" data-ja="観測する" data-en="Observe">観測する</button><button id="audio" data-ja="528Hzを鳴らす" data-en="Play 528Hz">528Hzを鳴らす</button></div>
+    </aside>
+  </section>
+
+  <section class="grid" style="margin-top:18px;">
+    <div class="panel pad">
+      <h2 data-ja="量子詩" data-en="Quantum Poem">量子詩</h2>
+      <p class="poem" id="poem"></p>
+      <p class="notice" data-ja="注記：ここでの量子語彙は、明示された計算を除き詩的比喩として用います。科学的主張と比喩を混同しません。" data-en="Note: quantum language here is poetic unless a calculation is explicitly shown. Scientific claims and metaphors are kept separate.">注記：ここでの量子語彙は、明示された計算を除き詩的比喩として用います。科学的主張と比喩を混同しません。</p>
+    </div>
+    <div class="panel pad">
+      <h2 data-ja="528Hz × 432Hz 波形" data-en="528Hz × 432Hz Waveform">528Hz × 432Hz 波形</h2>
+      <canvas id="wave" class="wave"></canvas>
+      <p class="notice" data-ja="Silent NFTは、このQuantum Shogi体験内の実験モジュールです。mintやIPFSアップロードはこのページでは行いません。" data-en="Silent NFT is an experimental module within Quantum Shogi. This page does not mint tokens or upload to IPFS.">Silent NFTは、このQuantum Shogi体験内の実験モジュールです。mintやIPFSアップロードはこのページでは行いません。</p>
+    </div>
+  </section>
+
+  <footer>CoPhelia³ × Ara-Philia³ × RadicanTrust™ — We create places where uncertainty can become beautiful.</footer>
+</main>
+<script>
+const transitions=[
+  {id:'Hα',nm:656,color:'#ff6b6b',amp:.60,ja:'赤い赦しが、最も長い波として残る。',en:'Red forgiveness remains as the longest wave.'},
+  {id:'Hβ',nm:486,color:'#7df9ff',amp:.40,ja:'青い問いが、未来から現在へ戻る。',en:'A blue question returns from future to present.'},
+  {id:'Hγ',nm:434,color:'#b388ff',amp:.30,ja:'紫の余白が、未完成を守る。',en:'Violet margin protects the unfinished.'},
+  {id:'Hδ',nm:410,color:'#ffd54f',amp:.22,ja:'黄金の沈黙が、観測を待っている。',en:'Golden silence waits for observation.'}
+];
+let lang='ja', tick=0;
+const $=id=>document.getElementById(id);
+const halo=$('halo'), hctx=halo.getContext('2d'), wave=$('wave'), wctx=wave.getContext('2d'), stars=$('stars'), sctx=stars.getContext('2d');
+function resize(){ [halo,wave,stars].forEach(c=>{const r=c.getBoundingClientRect(); c.width=Math.max(320,r.width*devicePixelRatio); c.height=Math.max(160,r.height*devicePixelRatio);}); stars.width=innerWidth*devicePixelRatio; stars.height=innerHeight*devicePixelRatio; }
+addEventListener('resize',resize); resize();
+function probs(){ const sum=transitions.reduce((a,t)=>a+t.amp*t.amp,0)||1; return transitions.map(t=>({...t,p:t.amp*t.amp/sum})); }
+function renderSliders(){ $('sliders').innerHTML=transitions.map((t,i)=>`<label><span><b>${t.id} ${t.nm}nm</b><b id="pv${i}"></b></span><input type="range" min="0" max="1" step="0.01" value="${t.amp}" data-i="${i}"></label>`).join(''); document.querySelectorAll('input[type=range]').forEach(el=>el.oninput=e=>{transitions[+e.target.dataset.i].amp=+e.target.value; updateText();}); }
+function updateText(){ const ps=probs(); const dom=ps.reduce((a,b)=>a.p>b.p?a:b); $('norm').textContent=ps.reduce((a,b)=>a+b.p,0).toFixed(2); $('dominant').textContent=dom.id; $('phase').textContent=(0.5+dom.p/2).toFixed(3); ps.forEach((p,i)=>{const el=$('pv'+i); if(el) el.textContent=(p.p*100).toFixed(1)+'%';}); $('poem').innerHTML = lang==='ja' ? `<em>${dom.id}</em>：${dom.ja}<br>問いは盤面を離れ、光の条件になる。<br>未完成のまま、確率はやさしく整列する。` : `<em>${dom.id}</em>: ${dom.en}<br>The question leaves the board and becomes a condition of light.<br>Unfinished, probability aligns gently.`; document.querySelectorAll('[data-ja]').forEach(el=>{ if(el.id==='poem') return; el.textContent=el.dataset[lang]; }); }
+function drawHalo(){ const d=devicePixelRatio, W=halo.width, H=halo.height, cx=W/2, cy=H/2; hctx.clearRect(0,0,W,H); const ps=probs(); const g=hctx.createRadialGradient(cx,cy,10,cx,cy,Math.min(W,H)*.55); g.addColorStop(0,'rgba(255,255,255,.18)'); g.addColorStop(1,'rgba(0,0,0,0)'); hctx.fillStyle=g; hctx.fillRect(0,0,W,H); ps.forEach((t,i)=>{ const r=Math.min(W,H)*(0.15+i*.09+Math.sin(tick*.015+i)*.006); hctx.beginPath(); hctx.arc(cx,cy,r,0,Math.PI*2); hctx.strokeStyle=t.color; hctx.globalAlpha=.24+t.p*.72; hctx.lineWidth=(2+t.p*16)*d; hctx.stroke(); for(let k=0;k<18;k++){ const a=tick*.01+k*.35+i; const rr=r+Math.sin(tick*.02+k)*18*d; hctx.fillStyle=t.color; hctx.globalAlpha=.10+t.p*.45; hctx.beginPath(); hctx.arc(cx+Math.cos(a)*rr,cy+Math.sin(a)*rr,1.4*d+t.p*3*d,0,Math.PI*2); hctx.fill(); } }); hctx.globalAlpha=1; hctx.fillStyle='rgba(255,255,255,.9)'; hctx.font=`${14*d}px monospace`; hctx.fillText('|ψ⟩ = Σ cᵢ|Balmerᵢ⟩   Pᵢ = |cᵢ|²',24*d,34*d); }
+function drawWave(){ const W=wave.width,H=wave.height; wctx.clearRect(0,0,W,H); wctx.strokeStyle='rgba(125,249,255,.95)'; wctx.lineWidth=2*devicePixelRatio; wctx.beginPath(); for(let x=0;x<W;x++){ const t=(x/W)*Math.PI*8; const y=H/2 + Math.sin(t+tick*.035)*H*.18 + Math.sin(t*432/528+tick*.022)*H*.10; x? wctx.lineTo(x,y):wctx.moveTo(x,y); } wctx.stroke(); wctx.strokeStyle='rgba(255,213,79,.55)'; wctx.beginPath(); for(let x=0;x<W;x++){ const t=(x/W)*Math.PI*8; const y=H/2 + Math.sin(t*11/9+tick*.028)*H*.22; x? wctx.lineTo(x,y):wctx.moveTo(x,y); } wctx.stroke(); }
+let starSeed=Array.from({length:140},()=>[Math.random(),Math.random(),Math.random()]);
+function drawStars(){ const W=stars.width,H=stars.height; sctx.clearRect(0,0,W,H); starSeed.forEach((s,i)=>{ const x=s[0]*W,y=(s[1]*H+tick*s[2]*.08)%H; sctx.fillStyle=`rgba(255,255,255,${.18+s[2]*.65})`; sctx.fillRect(x,y,1+s[2]*2,1+s[2]*2); }); }
+function loop(){ tick++; drawStars(); drawHalo(); drawWave(); requestAnimationFrame(loop); }
+function play(){ const A=new (window.AudioContext||window.webkitAudioContext)(); [432,528,660].forEach((f,i)=>{ const o=A.createOscillator(), g=A.createGain(); o.type='sine'; o.frequency.value=f; g.gain.setValueAtTime(.0001,A.currentTime); g.gain.exponentialRampToValueAtTime(.08/(i+1),A.currentTime+.04); g.gain.exponentialRampToValueAtTime(.0001,A.currentTime+1.2); o.connect(g).connect(A.destination); o.start(); o.stop(A.currentTime+1.25); }); }
+$('ja').onclick=()=>{lang='ja'; $('ja').classList.add('active'); $('en').classList.remove('active'); updateText();};
+$('en').onclick=()=>{lang='en'; $('en').classList.add('active'); $('ja').classList.remove('active'); updateText();};
+$('observe').onclick=()=>{ transitions.forEach(t=>t.amp=Math.max(.05,Math.min(1,t.amp+(Math.random()-.5)*.18))); document.querySelectorAll('input[type=range]').forEach((el,i)=>el.value=transitions[i].amp); updateText(); };
+$('audio').onclick=play;
+renderSliders(); updateText(); loop();
+</script>
+</body>
+</html>
