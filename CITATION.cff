@@ -1,0 +1,25 @@
+cff-version: 1.2.0
+message: "If you use this work, please cite it using the metadata below."
+title: "Quantum Shogi — Balmer Resonance"
+authors:
+  - family-names: "Hashiguchi"
+    given-names: "Sou"
+version: "v0.1.0"
+date-released: "2026-07-04"
+type: software
+repository-code: "https://github.com/nijinomichi/quantum-shogi-silent-nft"
+url: "https://nijinomichi.github.io/quantum-shogi-silent-nft/app/quantum-balmer-standalone.html"
+abstract: >-
+  A standalone reference experience integrating Balmer-series-inspired
+  visualization, Born-rule-inspired probability controls, and poetic
+  observation into a single static exhibition space. It is an experimental
+  reference implementation associated with the QuantumArt Protocol 2026.
+keywords:
+  - "quantum aesthetics"
+  - "poetic HCI"
+  - "interactive art"
+  - "Balmer series"
+  - "Born rule"
+  - "human-AI co-creation"
+  - "generative art"
+license: MIT
