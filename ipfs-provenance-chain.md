@@ -47,7 +47,12 @@ ipfs-provenance-chain.md（this document）
 
 ---
 
-## RadicanTrust™ 指標（透明性・相互性・寝容性）
+## RadicanTrust™ 指標（透明性・相互性・寛容性）
+
+> **Note:** RadicanTrust™ Score is a conceptual and artistic indicator used within this project.
+> It is not an independently validated scientific measurement, and should not be interpreted as an objective third-party assessment.
+>
+> このスコアは本プロジェクト内で用いる概念的・芸術的な指標であり、第三者機関による客観的測定値を示すものではありません。
 
 - **Transparency**: 全CID・日付・作成者名を明示（非匿名・非抽出型）
 - **Reciprocity**: コミュニティへのリターンとしてプロトコル公開
